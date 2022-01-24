@@ -1,0 +1,43 @@
+# Python Readme
+
+    - This is not the best python code, this is just a tribute
+
+This folder contains the following Python files;
+
+    - avro_reader
+    - calendar_api
+    - csv_record_count
+    - csv_splitter
+    - dir_list
+    - excel_reader
+    - file_splitter
+
+## avro_reader
+
+Was trying to figure out how big the Avro files were
+
+I don't think this is accurate and I'm sure there is a better way, and I'm sure someone else has done it better already
+
+## calendar_api
+
+THIS IS THE WRONG FKN FILE, FML
+
+## csv_record_count
+
+For when you don't want to open a CSV on your Mac because Numbers
+
+## csv_splitter
+
+When you need to split a CSV into smaller chunks "cause ma upload breaks"
+
+## dir_list
+
+Lists files / dirs in a drive / dir, because reasons
+
+## excel_reader
+
+Reads Excel
+
+## file_splitter
+
+Basically the same as the CSV, don't know why I have 2
