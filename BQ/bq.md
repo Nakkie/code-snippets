@@ -2,9 +2,14 @@
 
 This folder contains the following SQL files;
 
+    - agg_no
     - dim_date
     - ml_matrix_factorization
     - pivot
+
+## agg_no
+
+An horrific attempt at playing with some IMDB data
 
 ## dim_date
 

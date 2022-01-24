@@ -1,6 +1,6 @@
 import pandas as pd
 
-in_csv = 'C:\GitProjects\Local\customer_items_demodata.csv'
+in_csv = 'C:\GitProjects\Local\demodata.csv'
 csv_df = pd.read_csv(in_csv, low_memory=False)
 
 row_cnt = len(csv_df.index)
@@ -22,7 +22,7 @@ while batch_start <= row_cnt:
 
       export_df = export_df.convert_dtypes()
 
-      export_csv = "C:\GitProjects\Local\customer_demo_data_"+str(int(batch_end/100000))+".csv"
+      export_csv = "C:\GitProjects\Local\demo_data_"+str(int(batch_end/100000))+".csv"
       export_df.to_csv(export_csv, index=False)
 
       if batch_start == 0:
