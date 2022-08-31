@@ -20,9 +20,15 @@ I don't think this is accurate and I'm sure there is a better way, and I'm sure 
 
 ## calendar_api
 
-THIS IS THE WRONG FKN FILE, FML
+Built this because "surely you don't have that many meetings"
+
+Basically pulls data from your Google Calendar and throws it into Google BigQuery for analytics
+
+    TODO - OAUTH scope changes, need to update the script
 
 ## csv_record_count
+
+Counts the records in a CSV file
 
 For when you don't want to open a CSV on your Mac because Numbers
 

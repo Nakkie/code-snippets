@@ -1,0 +1,1 @@
+gsutil ls -lR gs://bucket | tail -n 1
