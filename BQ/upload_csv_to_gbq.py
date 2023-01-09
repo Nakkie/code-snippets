@@ -15,9 +15,20 @@ df = pd.read_csv(input_file_path+'\\'+input_file_name, sep=',', low_memory=False
 
 # this section can be expanded for any other special chars or odd column names
 df_columns = df.head()
-for i in df_columns:
+n = 0
 
-    inew = i.replace(" ", "_")
+for i in df_columns:
+    # n+=1 -- use when a CSV has multiple columns with the same name
+
+    inew = i.replace(" ", "")
+    inew = inew.replace("#", "")
+    inew = inew.replace("/", "")
+    inew = inew.replace("(", "")
+    inew = inew.replace(")", "")
+    inew = inew.replace("'", "")
+    inew = inew.replace(".", "_")
+    inew = inew.replace("-", "_")
+    # inew = inew+str(n)
 
     df.rename(columns={i: inew}, inplace=True)
 
