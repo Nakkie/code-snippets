@@ -12,5 +12,4 @@ select
   CAST(FORMAT_DATE('%Y%m%d', date) AS INT64) AS int_date_id,
   CAST(FORMAT_DATE('%Y%W', date) AS INT64) AS int_week_id,
   CAST(FORMAT_DATE('%Y', date) AS INT64) * 10000 + CAST(FORMAT_DATE('%W', date) AS INT64) AS week_id
-from
-  UNNEST(GENERATE_DATE_ARRAY('2021-01-01', '2022-12-31')) AS date;
+from unnest(GENERATE_DATE_ARRAY("2016-06-01", CURRENT_DATE())) as Dates
