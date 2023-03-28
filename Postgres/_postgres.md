@@ -3,9 +3,7 @@
     - I don't trust this code, and neither should you
     - Postgres makes that funny spot in my neck itch
 
-This folder contains the following SQL files;
-
-    - variable_proc
+Below are descriptions for the files contained in this directory
 
 ## variable_proc
 

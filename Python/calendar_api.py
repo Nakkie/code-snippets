@@ -1,105 +1,125 @@
 from __future__ import print_function
-import pickle
-import os.path
 
-from googleAPI.credential import build
-from google_auth_oauthlib.flow import InstalledAppFlow
-from google.auth.transport.requests import Request
-from google.oauth2 import service_account
+import datetime
+import os.path
 
 import pandas as pd
 
-# If modifying these scopes, delete the file token.pickle.
+from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import InstalledAppFlow
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
+from google.oauth2 import service_account
+
+# If modifying these scopes, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
-AUTH_TOKEN = os.getenv("AUTH_JSON")
-GCP_AUTH = os.getenv("BQ_AUTH")
-GCP_PROJECT = "example-project"
 
 
-def generate_auth():
+def pull_cal(then, now):
+    """Shows basic usage of the Google Calendar API."""
     creds = None
-    # The file token.pickle stores the user's access and refresh tokens, and is
+    # The file token.json stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
     # time.
-    if os.path.exists('token.pickle'):
-        with open('token.pickle', 'rb') as token:
-            creds = pickle.load(token)
+    if os.path.exists('token.json'):
+        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
     # If there are no (valid) credentials available, let the user log in.
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
-                AUTH_TOKEN, SCOPES)
+                'C:\\my-oath-key.json', SCOPES)
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
-        with open('token.pickle', 'wb') as token:
-            pickle.dump(creds, token)
+        with open('token.json', 'w') as token:
+            token.write(creds.to_json())
 
-    service = build('calendar', 'v3', credentials=creds)
-    return service
+    try:
+        service = build('calendar', 'v3', credentials=creds)
 
+        # Call the Calendar API
+        print('Getting events')
+        events_result = service.events().list(calendarId='primary', 
+                                              timeMin=then,
+                                              timeMax=now,
+                                              singleEvents=True,
+                                              orderBy='startTime').execute()
+        events = events_result.get('items', [])
 
-def call_api(service, month):
-    # Call the Calendar API
-    monthe = month + 1
-    if monthe > 12 :
-        monthe = 12
-
-    if len(str(month)) == 1:
-        month = "0"+str(month)
-    if len(str(monthe)) == 1:
-        monthe = "0"+str(monthe)
-
-
-    # startdate = f"2022-01-01T00:00:00.000000Z"
-    # enddate = f"2022-02-01T00:00:00.000000Z"
-    print('Getting the events')
-    events_result = service.events().list(calendarId='primary', timeMin=startdate,
-                                          timeMax=enddate, singleEvents=True,
-                                          orderBy='startTime').execute()
-    events = events_result.get('items', [])
-
-    df = pd.DataFrame(columns=['StartTime', 'EndTime', 'Event'])
-    print('Events got')
-
-    if not events:
-        print('No upcoming events found.')
-    for event in events:
-        print('Set Start Date')
-        start = event['start'].get('dateTime', event['start'].get('date'))
-        print('Set End Date')
-        end = event['end'].get('dateTime', event['end'].get('date'))
-
-        print('Set Summary')
-        if 'summary' in event:
-            summary = event['summary']
+        if not events:
+            print('No events found')
         else:
-            summary = 'No title'
+            return events
 
-        print('Updating DF')
-        df2 = pd.DataFrame(data={'StartTime': start, 'EndTime': end, 'Event': summary}, index=[0])
-        df = df.append(df2)
+    except HttpError as error:
+        print('An error occurred: %s' % error)
+    
 
-    print('Returning events')
-    return df, month
+def events_to_df(events):
+
+    df_columns = ['event_name', 'event_type', 'creator', 'organizer', 'event_start', 'event_end']
+    event_df = pd.DataFrame(columns=df_columns)
+
+    for event in events:
+        start = event['start'].get('dateTime', event['start'].get('date'))
+        end = event['end'].get('dateTime', event['end'].get('date'))
+        creator = event['creator'].get('email')
+        organizer = event['organizer'].get('email')
+        eventtype = event['eventType']
+        eventname = event['summary']
+
+        new_row = {'event_name':eventname, 'event_type':eventtype, 'creator':creator, 'organizer':organizer, 'event_start':start, 'event_end':end}
+
+        event_df = event_df.append(new_row, ignore_index=True)
+
+    return event_df
 
 
-def upload_to_bq(GCP_PROJECT, GCP_AUTH, upload_data, month):
+def df_to_bq(df, year, month):
+    # Set up authentication with Google Cloud
+    bq_creds = service_account.Credentials.from_service_account_file('C:\\mykeyfile.json')
 
-    print('GCP Auth')
-    gcp_credentials = service_account.Credentials.from_service_account_file(GCP_AUTH)
+    # Define the destination table in BigQuery
+    project_id = 'my-project'
+    dataset_id = 'my-data-set'
+    table_name = 'my-table'
+    if len(str(month)) < 2:
+        month = '0'+str(month)
 
-    print('Uploading data')
-    upload_data.to_gbq(f"staging.meets_Jan22", project_id=GCP_PROJECT, if_exists='replace', credentials=gcp_credentials)
+    # Push the DataFrame to BigQuery
+    # Table created per month
+    df.to_gbq(destination_table=f'{dataset_id}.{table_name}_{year}{month}',
+          project_id=project_id,
+          credentials=bq_creds,
+          if_exists='replace')
 
+# Cycle through each month of the given years
+years = [2022,2023]
 
-if __name__ == '__main__':
+for year in years:
+    month = 1
+    while month <= 12:
 
-    # months = [01]
-    #
-    # for month in months:
-        client = generate_auth()
-        diary_table, runmonth = call_api(client, 1)
-        upload_to_bq(GCP_PROJECT, GCP_AUTH, diary_table, 1)
+        start_of_month = datetime.datetime(year, month, 1)
+        start_of_month = start_of_month.isoformat()+'Z'
 
+        if month == 12:
+            end_of_month = datetime.datetime(year + 1, 1, 1) - datetime.timedelta(days=1) + datetime.timedelta(hours=23)
+
+        else:
+            end_of_month = datetime.datetime(year, month + 1, 1) - datetime.timedelta(days=1) + datetime.timedelta(hours=23)
+
+        end_of_month = end_of_month.isoformat()+'Z'
+
+        try:
+            events = pull_cal(start_of_month, end_of_month)
+            print(f'Creating dataframe for {year} and {month}')
+            df = events_to_df(events)
+            print(f'Uploading dataframe for {year} and {month}')
+            df_to_bq(df, year, month)
+        except:
+            print(f'Could not load for {year} and {month}')
+
+        month+=1

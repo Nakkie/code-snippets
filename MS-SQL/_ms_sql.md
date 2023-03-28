@@ -8,24 +8,7 @@ Fair warning, I haven't touched MS SQL in a couple of years since I made these..
     - Q: You seem very biast against DBA's?
     - A: I always knew they could be automated, go checkout Google Cloud SQL
 
-This folder contains the following SQL files;
-
-    - Code_Def
-    - Column_Rename
-    - Cursor_Template
-    - DB_SizeChk
-    - Job_History
-    - Last_Restore
-    - Pivot_Templates
-    - Rollbacks
-    - Scraps
-    - Server_Activity
-    - Shrink_Log
-    - Table_Constraints
-    - Table_Meta
-    - Table_Space
-    - TSQL_UserLoad
-
+Below are descriptions for the files contained in this directory
 
 ## Code_Def
 

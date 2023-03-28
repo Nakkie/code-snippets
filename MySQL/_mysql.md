@@ -2,11 +2,7 @@
 
     - If you are using MySQL 5.7 when reading this, I feel for you bud 
 
-This folder contains the following SQL files;
-
-    - cursor
-    - events
-    - running_tasks
+Below are descriptions for the files contained in this directory
 
 ## cursor
 
@@ -15,6 +11,14 @@ A cursor template
 ## events
 
 Creating events because no Job Scheduler, MS SQL really spoils you
+
+## mysql67_rownumber
+
+If you are the person responsible for choosing to run MySQL 5.7, may you burn in hell
+
+This is the answer to not being able to use simple windowing functions, such a row_number()
+
+FAOL
 
 ## running_tasks
 
