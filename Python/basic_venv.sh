@@ -2,6 +2,9 @@
 $python -m venv \path\to\myenv
 
 # activate
+terminal
+activate <venv>
+
 bash/zsh
 $ source <venv>/bin/activate
 
