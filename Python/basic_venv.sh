@@ -11,10 +11,10 @@ bash/zsh
 $ source <venv>/bin/activate
 
 cmd.exe
-C:\> <venv>\Scripts\activate.bat
+C:\> <venv>\Scripts\activate
 
 PowerShell
-PS C:\> <venv>\Scripts\Activate.ps1
+PS C:\> <venv>\Scripts\Activate
 
 # deactivate
 deactivate
