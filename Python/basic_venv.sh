@@ -12,9 +12,11 @@ $ source <venv>/bin/activate
 
 cmd.exe
 C:\> <venv>\Scripts\activate
+.\<venv>\scripts\activate
 
 PowerShell
 PS C:\> <venv>\Scripts\Activate
+.\<venv>\scripts\activate
 
 # deactivate
 deactivate
