@@ -1,20 +1,20 @@
-# create
+# create using python
 $python -m venv \path\to\myenv
 
+# create using virtualenv
 virtualenv --python=3.10 <venv> 
 
-# activate
-terminal
-activate <venv>
-
-bash/zsh
+# activate on bash/zsh
 $ source <venv>/bin/activate
 
-cmd.exe
+# activate on terminal
+activate <venv>
+
+# activate in windows cmd
 C:\> <venv>\Scripts\activate
 .\<venv>\scripts\activate
 
-PowerShell
+# activate in windows PowerShell
 PS C:\> <venv>\Scripts\Activate
 .\<venv>\scripts\activate
 
