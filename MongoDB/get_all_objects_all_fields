@@ -1,0 +1,17 @@
+function getCollectionFields(collectionName) {
+    let fields = new Set();
+
+    // Limit to first 1000 documents to avoid performance issues on large collections
+    db.getCollection(collectionName).find({}).limit(1000).forEach(function(doc) {
+        Object.keys(doc).forEach(function(field) {
+            fields.add(field);
+        });
+    });
+
+    return Array.from(fields);
+}
+
+db.getCollectionNames().forEach(function(collectionName) {
+    print('Collection: ' + collectionName);
+    print('Fields: ' + getCollectionFields(collectionName).join(', '));
+});
